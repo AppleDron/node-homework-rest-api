@@ -23,7 +23,9 @@ const removeContact = async (contactId) => {
   const filteredContacts = contacts.filter(({ id }) => contactId !== id);
   await fs.writeFile(pathToContacts, JSON.stringify(filteredContacts));
 
-  return deletedContact;
+  if (deletedContact) {
+    return true;
+  }
 };
 
 const addContact = async (body) => {
