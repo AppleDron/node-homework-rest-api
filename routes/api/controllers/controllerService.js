@@ -22,10 +22,7 @@ class ContactService {
   getContactByID = async (req, res, next) => {
     try {
       const contact = await getContactById(req.params.contactId);
-      res.status(200).json({
-        message: `Found a contact by id ${contact[0].id}`,
-        data: contact,
-      });
+      res.status(200).json({ contact });
     } catch (error) {
       res.status(404).json({ message: "Not found" });
       next(error);
@@ -70,9 +67,12 @@ class ContactService {
   updateContact = async (req, res, next) => {
     try {
       const { error, value } = schema.validate(req.body);
+      console.log(error.details[0].context.key);
 
       if (error) {
-        res.status(400).json({ message: error.details[0].message });
+        res
+          .status(400)
+          .json({ message: `Missing ${error.details[0].context.key} field` });
       } else {
         const body = await updateContact(req.params.contactId, value);
         res.status(200).json({ message: "template message", data: body });
