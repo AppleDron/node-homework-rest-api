@@ -4,7 +4,7 @@ const {
   getContactById,
   addContact,
   updateContact,
-} = require("../../../models/contacts");
+} = require("../models/contacts");
 const schema = require("../validation/schema");
 
 class ContactService {
