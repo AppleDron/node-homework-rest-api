@@ -43,7 +43,7 @@ class ContactService {
       const body = await addContact(value);
       res.status(201).json(body);
     }
-    next(error);
+    // next(error);
   };
 
   deleteContact = async (req, res, next) => {
@@ -54,7 +54,6 @@ class ContactService {
       });
     } else {
       res.status(404).json({ message: "Not found" });
-      next(error);
     }
   };
 
