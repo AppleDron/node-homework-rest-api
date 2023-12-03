@@ -4,6 +4,7 @@ const {
   getContactById,
   addContact,
   updateContact,
+  updateStatusContact,
 } = require("../models/contacts");
 const schema = require("../validation/schema");
 
@@ -22,13 +23,13 @@ class ContactService {
   getContactByID = async (req, res, next) => {
     try {
       const contact = await getContactById(req.params.contactId);
-      if (!contact.length) {
-        res.status(404).json({ message: "Not found" });
+      if (!contact) {
+        return res.status(404).json({ message: "Not found" });
       }
-      res.status(200).json(...contact);
+
+      res.status(200).json(contact);
     } catch (error) {
       res.status(404).json({ message: "Not found" });
-      next(error);
     }
   };
 
@@ -43,35 +44,53 @@ class ContactService {
       const body = await addContact(value);
       res.status(201).json(body);
     }
-    // next(error);
   };
 
   deleteContact = async (req, res, next) => {
-    const contact = await removeContact(req.params.contactId);
-    if (contact) {
-      res.status(200).json({
-        message: `Contact deleted`,
-      });
-    } else {
+    try {
+      const contact = await removeContact(req.params.contactId);
+
+      if (contact) {
+        res.status(200).json({
+          message: `Contact deleted`,
+        });
+      }
+    } catch (error) {
       res.status(404).json({ message: "Not found" });
     }
   };
 
   updateContact = async (req, res, next) => {
-    const { error, value } = schema.validate(req.body);
+    try {
+      const { error, value } = schema.validate(req.body);
 
-    if (error) {
-      res
-        .status(400)
-        .json({ message: `Missing ${error.details[0].context.key} field` });
-    } else {
-      const body = await updateContact(req.params.contactId, value);
+      if (error) {
+        res
+          .status(400)
+          .json({ message: `Missing ${error.details[0].context.key} field` });
+      } else {
+        const body = await updateContact(req.params.contactId, value);
 
-      if (!body) {
-        res.status(404).json({ message: "Not found" });
+        res.status(200).json(body);
       }
+    } catch (error) {
+      res.status(404).json({ message: "Not found" });
+    }
+  };
 
-      res.status(200).json(body);
+  updateFavorite = async (req, res, next) => {
+    try {
+      const { error, value } = schema.favoriteSchema.validate(req.body);
+      const contactId = req.params.contactId;
+
+      if (error) {
+        res.status(400).json({ message: "missing field favorite" });
+      } else {
+        const result = await updateStatusContact(contactId, value);
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      res.status(404).json({ message: "Not found" });
     }
   };
 }

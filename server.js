@@ -1,5 +1,9 @@
-const app = require('./app')
+const app = require("./app");
+const setupMongoConnection = require("./setupMongoConnection/setupMongoConnection");
 
-app.listen(3000, () => {
-  console.log("Server running. Use our API on port: 3000")
-})
+setupMongoConnection().then(() => {
+  app.listen(3000, async () => {
+    await setupMongoConnection();
+    console.log("Server running. Use our API on port: 3000");
+  });
+});
