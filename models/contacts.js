@@ -37,7 +37,7 @@ const updateContact = async (contactId, body) => {
   const contact = await Contact.findById(contactId);
 
   if (!contact) {
-    return false;
+    return contact;
   }
 
   const updatedContact = await Contact.findByIdAndUpdate(contactId, body, {

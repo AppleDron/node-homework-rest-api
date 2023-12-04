@@ -6,7 +6,7 @@ const {
   updateContact,
   updateStatusContact,
 } = require("../models/contacts");
-const schema = require("../validation/schema");
+const { userSchema, favoriteSchema } = require("../validation/userSchema");
 
 class ContactService {
   constructor() {}
@@ -34,7 +34,7 @@ class ContactService {
   };
 
   createNewContact = async (req, res, next) => {
-    const { error, value } = schema.validate(req.body);
+    const { error, value } = userSchema.validate(req.body);
 
     if (error) {
       res
@@ -62,7 +62,7 @@ class ContactService {
 
   updateContact = async (req, res, next) => {
     try {
-      const { error, value } = schema.validate(req.body);
+      const { error, value } = userSchema.validate(req.body);
 
       if (error) {
         res
@@ -80,7 +80,7 @@ class ContactService {
 
   updateFavorite = async (req, res, next) => {
     try {
-      const { error, value } = schema.favoriteSchema.validate(req.body);
+      const { error, value } = favoriteSchema.validate(req.body);
       const contactId = req.params.contactId;
 
       if (error) {
