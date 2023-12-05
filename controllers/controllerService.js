@@ -54,6 +54,8 @@ class ContactService {
         res.status(200).json({
           message: `Contact deleted`,
         });
+      } else {
+        throw new Error();
       }
     } catch (error) {
       res.status(404).json({ message: "Not found" });
