@@ -1,7 +1,12 @@
 const Contact = require("../validation/mongoSchema");
 
-const listContacts = async () => {
-  const contacts = await Contact.find().where("deletedAt").equals(null);
+const getContacts = async (limit, startIndex, filter) => {
+  const contacts = await Contact.find(filter)
+    .where("deletedAt")
+    .equals(null)
+    .limit(limit)
+    .skip(startIndex)
+    .exec();
   return contacts;
 };
 
@@ -60,11 +65,16 @@ const updateStatusContact = async (contactId, body) => {
   return updatedContact;
 };
 
+const countDocuments = async (filter) => {
+  return await Contact.countDocuments(filter).exec();
+};
+
 module.exports = {
-  listContacts,
+  getContacts,
   getContactById,
   removeContact,
   addContact,
   updateContact,
   updateStatusContact,
+  countDocuments,
 };

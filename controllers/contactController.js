@@ -1,26 +1,27 @@
 const {
   removeContact,
-  listContacts,
   getContactById,
   addContact,
   updateContact,
   updateStatusContact,
 } = require("../models/contacts");
-const { userSchema, favoriteSchema } = require("../validation/userSchema");
+const contactService = require("../services/contactService");
+const {
+  contactSchema,
+  favoriteSchema,
+} = require("../validation/contactSchema");
 
-class ContactService {
-  constructor() {}
-
-  getAllContacts = async (req, res, next) => {
+class ContactController {
+  async getAllContacts(req, res, next) {
     try {
-      const contacts = await listContacts();
+      const contacts = await contactService.getAllContacts(req.query);
       res.status(200).json(contacts);
     } catch (error) {
       next(error);
     }
-  };
+  }
 
-  getContactByID = async (req, res, next) => {
+  async getContactByID(req, res, next) {
     try {
       const contact = await getContactById(req.params.contactId);
       if (!contact) {
@@ -31,10 +32,10 @@ class ContactService {
     } catch (error) {
       res.status(404).json({ message: "Not found" });
     }
-  };
+  }
 
-  createNewContact = async (req, res, next) => {
-    const { error, value } = userSchema.validate(req.body);
+  async createNewContact(req, res, next) {
+    const { error, value } = contactSchema.validate(req.body);
 
     if (error) {
       res
@@ -44,9 +45,9 @@ class ContactService {
       const body = await addContact(value);
       res.status(201).json(body);
     }
-  };
+  }
 
-  deleteContact = async (req, res, next) => {
+  async deleteContact(req, res, next) {
     try {
       const contact = await removeContact(req.params.contactId);
 
@@ -60,11 +61,11 @@ class ContactService {
     } catch (error) {
       res.status(404).json({ message: "Not found" });
     }
-  };
+  }
 
-  updateContact = async (req, res, next) => {
+  async updateContact(req, res, next) {
     try {
-      const { error, value } = userSchema.validate(req.body);
+      const { error, value } = contactSchema.validate(req.body);
 
       if (error) {
         res
@@ -78,9 +79,9 @@ class ContactService {
     } catch (error) {
       res.status(404).json({ message: "Not found" });
     }
-  };
+  }
 
-  updateFavorite = async (req, res, next) => {
+  async updateFavorite(req, res, next) {
     try {
       const { error, value } = favoriteSchema.validate(req.body);
       const contactId = req.params.contactId;
@@ -94,9 +95,9 @@ class ContactService {
     } catch (error) {
       res.status(404).json({ message: "Not found" });
     }
-  };
+  }
 }
 
-const contactService = new ContactService();
+const contactController = new ContactController();
 
-module.exports = contactService;
+module.exports = contactController;
