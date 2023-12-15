@@ -1,4 +1,5 @@
 const { JWT_SECRET } = require("../constants/env");
+const generateAvatar = require("../middlewares/generateAvatar");
 const {
   registration,
   findById,
@@ -13,7 +14,13 @@ const jwt = require("jsonwebtoken");
 class UserService {
   async registration({ email, password }) {
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await registration({ email, password: passwordHash });
+    const avatarURL = generateAvatar(email);
+    console.log(avatarURL);
+    const user = await registration({
+      email,
+      avatarURL,
+      password: passwordHash,
+    });
 
     return user;
   }

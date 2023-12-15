@@ -15,15 +15,10 @@ const userSchema = new Schema({
     enum: ["starter", "pro", "business"],
     default: "starter",
   },
+  avatarURL: String,
+
   token: String,
 });
-
-// userSchema.methods.toJSON = function () {
-//   const obj = this.toObject();
-//   delete obj.password;
-
-//   return obj;
-// };
 
 const User = mongoose.model("users", userSchema);
 module.exports = User;

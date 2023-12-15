@@ -1,4 +1,5 @@
 const HttpError = require("../middlewares/HttpError");
+const saveFileToStorage = require("../middlewares/saveFileToStorage");
 const userService = require("../services/userService");
 const userSchema = require("../validation/userSchemaJoi");
 const userSubscribtionSchema = require("../validation/userSubscribtionSchema");
@@ -102,6 +103,22 @@ class UserController {
     return res
       .status(200)
       .json({ message: "Subscribtion updated successfully" });
+  }
+
+  async updateAvatar(req, res, next) {
+    if (!req.user) {
+      return next(new HttpError(401, "Not authorized"));
+    }
+
+    const userId = req.user.id;
+
+    const avatarUrl = await saveFileToStorage(req.file);
+
+    const { avatarURL } = await userService.updateuserById(userId, {
+      avatarURL: avatarUrl,
+    });
+
+    res.status(200).json({ avatarUrl: avatarURL });
   }
 }
 

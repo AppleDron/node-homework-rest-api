@@ -4,6 +4,7 @@ const cors = require("cors");
 
 const contactsRouter = require("./routes/api/contacts");
 const usersRouter = require("./routes/api/users.js");
+const { TEMP_AVATARS_DIR } = require("./constants/fileManager.js");
 
 const app = express();
 
@@ -12,6 +13,8 @@ const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
+
+app.use(express.static(TEMP_AVATARS_DIR));
 
 app.use("/api/contacts", contactsRouter);
 app.use("/api/users", usersRouter);
